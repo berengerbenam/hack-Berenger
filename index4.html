@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker Console Ultra</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 5vh 5vw;
+        background: black;
+        overflow: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    p {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 3.5vh;
+        margin: 0;
+        padding: 0;
+        line-height: 1.2;
+        color: limegreen;
+        text-shadow: 0px 0px 8px limegreen;
+    }
+
+    .msg {
+        font-family: monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 5vh;
+        background: red;
+        box-shadow: 0 0 30px red;
+        text-shadow: 0 0 20px white;
+        color: white;
+        padding: 1vh 2vw;
+        position: absolute;
+        top: 45vh;
+        left: 30vw;
+        z-index: 10;
+        animation-name: blink;
+        animation-duration: 0.6s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: linear;
+    }
+
+    @keyframes blink {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    /* --- Visage du Hacker (Pixel Art en Binaire) --- */
+    .hacker-face-container {
+        position: absolute;
+        top: 50%;
+        right: 10%; /* Ajusté pour l'image */
+        transform: translateY(-50%);
+        width: 400px; /* Taille fixe */
+        height: 400px;
+        z-index: 5;
+    }
+
+    .hacker-face-svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 10px limegreen); /* Lueur générale */
+    }
+
+    /* Styles pour le texte binaire qui compose le visage */
+    .binary-stream {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 14px; /* Taille des caractères binaires */
+        fill: limegreen;
+        text-anchor: middle;
+        dominant-baseline: middle; /* Pour aligner le texte au centre des coordonnées */
+    }
+    
+    /* Styles pour les yeux et la bouche (débordant) */
+    .eye-shape, .mouth-shape {
+        fill: none;
+        stroke: limegreen;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 5px limegreen);
+    }
+    .ear-shape {
+        fill: #000; /* Fond noir pour les oreilles */
+        stroke: limegreen;
+        stroke-width: 2;
+    }
+    .hat-brim-line {
+        fill: none;
+        stroke: limegreen;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 5px limegreen);
+    }
+
+</style>
+<body>
+    <div id="main-container">
+        <div class="msg">BERENGER BENAM</div>
+        
+        <div id="console"></div>
+
+        <div class="hacker-face-container">
+            <svg class="hacker-face-svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <clipPath id="hatClip">
+                        <path d="M30 80 L50 40 L100 10 L150 40 L170 80 L170 90 L30 90 Z M20 85 H180 V100 H20 Z"/>
+                    </clipPath>
+                    <clipPath id="faceClip">
+                        <path d="M100 100 A60 60 0 1 0 100 100" />
+                    </clipPath>
+                </defs>
+
+                <g id="hat-binary" clip-path="url(#hatClip)">
+                    </g>
+                <path class="hat-brim-line" d="M20 85 H180" /> <g id="face-binary" clip-path="url(#faceClip)">
+                    </g>
+
+                <circle class="eye-shape" cx="75" cy="120" r="10" />
+                <circle class="eye-shape" cx="125" cy="120" r="10" />
+
+                <path class="mouth-shape" d="M70 150 Q100 168 130 150" />
+
+                <path class="ear-shape" d="M35 125 Q25 135 35 145 Z" />
+                <path class="ear-shape" d="M165 125 Q175 135 165 145 Z" />
+
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        var intervalID = window.setInterval(updateScreen, 200);
+        var c = document.getElementById("console");
+        
+        var hatBinaryGroup = document.getElementById("hat-binary");
+        var faceBinaryGroup = document.getElementById("face-binary");
+
+        var txt = [
+            "SCAN: __ 0100.0000.0554.0080",
+            "FORCE: XX0022. ENCYPT://000.222.2345",
+            "TRYPASS: ********* AUTH CODE: ALPHA GAMMA: 1___ PRIORITY 1",
+            "RETRY: REINDEER FLOTILLA",
+            "Z:> /FALKEN/GAMES/TICTACTOE/ EXECUTE -PLAYERS 0",
+            "Priority 1 // local / scanning...",
+            "scanning ports...",
+            "BACKDOOR FOUND (23.45.23.12.00000000)",
+            "BACKDOOR FOUND (13.66.23.12.00110000)",
+            "BACKDOOR FOUND (13.66.23.12.00110044)",
+            "...",
+            "BRUTE.EXE -r -z",
+            "...locating vulnerabilities...",
+            "MCP/> DEPLOY CLU",
+            "SCAN: __ 0020.0000.0553.0080",
+            "SCAN: __ 0001.0000.0554.0550",
+            "SCAN: __ 0012.0000.0553.0030",
+            "SCAN: __ 0100.0000.0554.0080",
+            "SCAN: __ 0020.0000.0553.0080",
+            "...vulnerabilities found..."
+        ];
+
+        var docfrag = document.createDocumentFragment();
+
+        function generateRandomBinary(length) {
+            let binary = '';
+            for (let i = 0; i < length; i++) {
+                binary += Math.round(Math.random());
+            }
+            return binary;
+        }
+
+        // Fonction pour générer des lignes binaires dans une zone donnée
+        function populateBinaryGroup(groupElement, xStart, yStart, width, height, charSize) {
+            // Efface les anciens binaires
+            while (groupElement.firstChild) {
+                groupElement.removeChild(groupElement.firstChild);
+            }
+
+            const lineHeight = charSize * 1.2;
+            const charWidth = charSize * 0.6; // Approximation
+
+            for (let y = yStart; y < yStart + height; y += lineHeight) {
+                let currentLineLength = 0;
+                let lineText = '';
+                while (currentLineLength < width) {
+                    const char = Math.round(Math.random());
+                    lineText += char;
+                    currentLineLength += charWidth;
+                }
+                const textElement = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                textElement.setAttribute("class", "binary-stream");
+                textElement.setAttribute("x", xStart);
+                textElement.setAttribute("y", y);
+                textElement.textContent = lineText;
+                groupElement.appendChild(textElement);
+            }
+        }
+
+
+        function updateBinaryFace() {
+            // Recrée les binaires pour le chapeau
+            populateBinaryGroup(hatBinaryGroup, 20, 30, 160, 70, 14); // x, y, width, height, charSize
+            // Recrée les binaires pour le visage
+            populateBinaryGroup(faceBinaryGroup, 40, 90, 120, 100, 14);
+        }
+
+        function updateScreen() {
+            // Mise à jour de la console (rotation)
+            txt.push(txt.shift());
+            // Rebuild document fragment
+            txt.forEach(function(e) {
+                var p = document.createElement("p");
+                p.textContent = e;
+                docfrag.appendChild(p);
+            });
+            // Clear DOM body
+            while (c.firstChild) {
+                c.removeChild(c.firstChild);
+            }
+            c.appendChild(docfrag);
+            
+            // Mise à jour du visage binaire
+            updateBinaryFace();
+        }
+        
+        // Initialisation du visage binaire et de la console
+        updateScreen();
+        var consoleInterval = window.setInterval(updateScreen, 200); 
+    </script>
+</body>
+</html>
