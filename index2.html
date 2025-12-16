@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker Console Pixel Art</title>
+</head>
+<style>
+    /* Styles de base pour la console */
+    body {
+        margin: 0;
+        padding: 5vh 5vw;
+        background: black;
+        overflow: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Style du texte de la console */
+    p {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 3.5vh; /* Ajusté pour le flux */
+        margin: 0;
+        padding: 0;
+        line-height: 1.2;
+        color: limegreen;
+        text-shadow: 0px 0px 8px limegreen;
+    }
+
+    /* Message clignotant */
+    .msg {
+        font-family: monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 5vh;
+        background: red;
+        box-shadow: 0 0 30px red;
+        text-shadow: 0 0 20px white;
+        color: white;
+        padding: 1vh 2vw;
+        position: absolute;
+        top: 45vh; /* Position ajustée */
+        left: 30vw; /* Position ajustée */
+        z-index: 10;
+        animation-name: blink;
+        animation-duration: 0.6s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: linear;
+    }
+
+    @keyframes blink {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    /* --- Visage du Hacker (Pixel Art Style) --- */
+    .hacker-face-container {
+        position: absolute;
+        top: 50%;
+        right: 15%; /* Positionné à droite comme dans l'image */
+        transform: translateY(-50%);
+        width: 350px; /* Taille fixe pour le pixel art */
+        height: 350px;
+        z-index: 5;
+    }
+
+    .hacker-face-svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Couleurs pour l'effet 'lueur verte' */
+    .hat-fill {
+        fill: #333; /* Remplissage sombre */
+        stroke: limegreen;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 5px #00ff00);
+    }
+    .face-fill {
+        fill: #004400; /* Vert foncé, intérieur sombre */
+        stroke: limegreen;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 10px limegreen); /* Lueur */
+    }
+
+    .binary-text {
+        font-family: monospace;
+        font-size: 15px; /* Taille pour l'effet binaire */
+        fill: limegreen;
+        text-anchor: middle;
+    }
+
+    .mouth-smile {
+        fill: none;
+        stroke: limegreen;
+        stroke-width: 4;
+    }
+    
+    /* Effet Pixel Art (contour et formes) - Utilisation de chemins SVG pour simuler le style pixélisé */
+
+    /* Chapeau (Style Fedora/Pixel) */
+    .hat-shape {
+        fill: #333;
+        stroke: limegreen;
+        stroke-width: 3;
+    }
+    
+</style>
+<body>
+    <div id="main-container">
+        <div class="msg">BERENGER BENAM</div>
+        
+        <div id="console"></div>
+
+        <div class="hacker-face-container">
+            <svg class="hacker-face-svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                
+                <path class="hat-shape" d="M30 80 L50 40 L100 20 L150 40 L170 80 L170 90 L30 90 Z" />
+                <rect class="hat-shape" x="20" y="80" width="160" height="15" fill="#333"/>
+        
+                <path class="face-fill" d="M100 100 A60 60 0 1 0 100 100" />
+                
+                <g id="binary-eyes">
+                    <text class="binary-text" x="75" y="115">100101</text>
+                    <text class="binary-text" x="75" y="125">011010</text>
+                    <text class="binary-text" x="75" y="135">110011</text>
+                    
+                    <text class="binary-text" x="125" y="115">001100</text>
+                    <text class="binary-text" x="125" y="125">110110</text>
+                    <text class="binary-text" x="125" y="135">011011</text>
+                </g>
+
+                <path class="mouth-smile" d="M70 150 Q100 168 130 150" />
+
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        var intervalID = window.setInterval(updateScreen, 200);
+        var c = document.getElementById("console");
+        var binaryEyes = document.getElementById("binary-eyes"); 
+
+        var txt = [
+            "...vulnerabilities found...",
+            "MCP/> DEPLOY CLU",
+            "SCAN: __ 0100.0000.0554.0080",
+            "SCAN: __ 0020.0000.0553.0080",
+            "SCAN: __ 0001.0000.0554.0550",
+            "SCAN: __ 0012.0000.0553.0030",
+            "SCAN: __ 0100.0000.0554.0080",
+            "SCAN: __ 0020.0000.0553.0080",
+            "FORCE: XX0022. ENCYPT://000.222.2345",
+            "TRYPASS: ********* AUTH CODE: ALPHA GAMMA: 1___ PRIORITY 1",
+            "RETRY: REINDEER FLOTILLA",
+            "Z:> /FALKEN/GAMES/TICTACTOE/ EXECUTE -PLAYERS 0",
+            "================================================",
+            "Priority 1 // local / scanning...",
+            "scanning ports...",
+            "BACKDOOR FOUND (23.45.23.12.00000000)",
+            "BACKDOOR FOUND (13.66.23.12.00110000)",
+            "BACKDOOR FOUND (13.66.23.12.00110044)",
+            "...",
+            "...",
+            "BRUTE.EXE -r -z",
+            "...locating vulnerabilities..."
+        ];
+
+        var docfrag = document.createDocumentFragment();
+
+        function generateRandomBinary(length) {
+            let binary = '';
+            for (let i = 0; i < length; i++) {
+                binary += Math.round(Math.random());
+            }
+            return binary;
+        }
+
+        function updateBinaryEyes() {
+            const binaryLines = binaryEyes.querySelectorAll('.binary-text');
+            binaryLines.forEach(function(line) {
+                // Met à jour le contenu binaire de manière aléatoire
+                line.textContent = generateRandomBinary(line.textContent.length);
+            });
+        }
+
+        function updateScreen() {
+            // Mise à jour de la console (rotation)
+            txt.push(txt.shift());
+            // Rebuild document fragment
+            txt.forEach(function(e) {
+                var p = document.createElement("p");
+                p.textContent = e;
+                docfrag.appendChild(p);
+            });
+            // Clear DOM body
+            while (c.firstChild) {
+                c.removeChild(c.firstChild);
+            }
+            c.appendChild(docfrag);
+            
+            // Mise à jour des yeux binaires pour l'effet 'Matrix'
+            updateBinaryEyes();
+        }
+        
+        updateScreen();
+        var consoleInterval = window.setInterval(updateScreen, 200); 
+    </script>
+</body>
+</html>
